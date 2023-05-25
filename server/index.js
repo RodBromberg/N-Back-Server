@@ -2,8 +2,7 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 
-const usersRoutes = require('./routes/user');
-const usersNew = require('./routes/users/users');
+const usersRoutes = require('./routes/users/user')
 
 
 
@@ -12,7 +11,8 @@ app.use(express.json());
 
 
 app.use('/api/users', usersRoutes);
-
+// email confirmation
+// *** To Be Refactored Upon Approval
 app.get('/confirm', async (req, res) => {
   const { token } = req.query;
   
