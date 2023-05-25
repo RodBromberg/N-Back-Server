@@ -11,9 +11,11 @@ router.get('/:id', usersController.getUserById);
 // Create a new user
 router.post('/signup', usersController.createUser);
 
+// User login
 router.post('/login', usersController.loginUser);
 
+// Add this new route in your usersRoutes.js file
+router.get('/confirm', usersController.confirmUser);
 
-// ... Other routes
 
 module.exports = router;

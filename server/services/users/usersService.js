@@ -1,15 +1,9 @@
 const bcrypt = require('bcrypt');
-const usersRepository = require('../repositories/usersRepository')
-
+const usersRepository = require('../../repositories/users/usersRepository')
 const { DynamoDBClient, GetItemCommand } = require("@aws-sdk/client-dynamodb");
-const { SESClient, SendEmailCommand } = require("@aws-sdk/client-ses");
-
-const region = "us-east-2"; // e.g., "us-west-2"
-
+const { SESClient, SendEmailCommand } = require("@aws-sdk/client-ses"); 
+const region = "us-east-2"; 
 const dynamoDBClient = new DynamoDBClient({ region });
-
-
-
 const sesClient = new SESClient({ region });
 
 const getAllUsers = async () => {
@@ -22,11 +16,11 @@ const getAllUsers = async () => {
 };
 
 const getUserById = async (userId) => {
-  console.log('User ID:', userId); // Add this line
+  console.log('User ID:', userId); 
 
   try {
     const user = await usersRepository.getUserById(userId);
-    console.log('User:', user); // Add this line
+    console.log('User:', user); 
     return user;
   } catch (error) {
     throw new Error('Error retrieving user');
@@ -39,6 +33,7 @@ const createUser = async (Email, Password) => {
     const hashedPassword = await bcrypt.hash(Password, 10);
     const newUser = await usersRepository.createUser(Email, hashedPassword);
 
+    // Email Parameters After AWS Approval
     // const emailParams = {
     //   Destination: {
     //     ToAddresses: [Email],
@@ -46,7 +41,7 @@ const createUser = async (Email, Password) => {
     //   Message: {
     //     Body: {
     //       Text: {
-    //         Data: `Please confirm your email by clicking on the following link: http://yourwebsite.com/confirm?token=${newUser.confirmationToken}`,
+    //         Data: `Please confirm your email by clicking on the following link: http://DOMAINNAME.com/confirm?token=${newUser.confirmationToken}`,
     //         Charset: "UTF-8"
     //       },
     //     },
@@ -55,7 +50,7 @@ const createUser = async (Email, Password) => {
     //       Charset: "UTF-8"
     //     },
     //   },
-    //   Source: 'rod.bromberg@yahoo.com',
+    //   Source: '',
     // };
 
     // const sendEmailCommand = new SendEmailCommand(emailParams);
@@ -79,7 +74,7 @@ const confirmUser = async (token) => {
 
     return user;
   } catch (error) {
-    throw new Error('Error confirming user');
+    throw new Error('Error confirming user', error.message);
   }
 };
 

@@ -1,5 +1,5 @@
 // controllers/usersController.js
-const usersService = require('../../services/usersService')
+const usersService = require('../../services/users/usersService')
 
 // Get all users
 const getAllUsers = async (req, res) => {
@@ -20,7 +20,7 @@ const getUserById = async (req, res) => {
     const user = await usersService.getUserById(email); // Update parameter name to 'email'
     console.log({ user }, 'CONTROLLERS');
     if (!user) {
-      res.status(404).json({ error: 'User not found controlle r' });
+      res.status(404).json({ error: 'User not found controller' });
     } else {
       res.json(user);
     }
@@ -35,6 +35,13 @@ const getUserById = async (req, res) => {
 const createUser = async (req, res) => {
   try {
     const { Email, Password } = req.body;
+
+    const checkIfExistingUser = await usersService.getUserByEmail(Email)
+
+    if(checkIfExistingUser){
+      return res.status(400).json({ err: 'Email already exists'})
+    }
+
     const newUser = await usersService.createUser(Email, Password);
     res.status(201).json(newUser);
   } catch (error) {
@@ -88,5 +95,5 @@ module.exports = {
   getUserById,
   createUser,
   loginUser,
-  confirmUser,  // Export the new function
+  confirmUser,  
 };
